@@ -6,11 +6,13 @@ header("Content-Type: application/json");
 try{
 	require_once("./connect.php");
 
-    $sql = "select DISTINCT m_id from sub_type"; 
+    $sql = "select * from maintype order by m_ord"; 
     $typ = $pdo->query($sql);
     $typ->execute();
     
-    $sql2 = "select DISTINCT s_id from sub_type"; 
+    $sql2 = 
+    "select * from sub_type s join maintype m on s.m_id = m.m_id
+    "; 
     $styp = $pdo->query($sql2);
     $styp->execute();
 

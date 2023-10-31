@@ -13,6 +13,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/vue-fontawesome": "^3.0.3",
+    "ant-design-vue": "^4.0.6",
     "axios": "^1.6.0",
     "chart.js": "^4.4.0",
     "pinia": "^2.1.7",

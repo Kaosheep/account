@@ -9,11 +9,15 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
 import App from './App.vue'
 import router from './router'
+import Antd from 'ant-design-vue';
+import 'ant-design-vue/dist/reset.css';
 
-library.add(faUserSecret)
+library.add(faUserSecret);
+
 
 const app = createApp(App)
 
+app.use(Antd);
 app.use(createPinia())
 app.use(router)
 app.component('font-awesome-icon', FontAwesomeIcon).mount()
