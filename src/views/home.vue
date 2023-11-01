@@ -128,22 +128,18 @@ const isEdit = ref(false);
 
 
 const open = () => {
-    if (isEdit) {
+    if (isEdit.value) {
         isEdit.value = false;
         isOpen.value = !isOpen.value;
-
-        select.con_id = "";
-        select.m_id = "";
-        select.s_id = "";
-        select.con_sum = "";
-        select.sub_name = "";
-
     } else {
         isOpen.value = !isOpen.value;
     }
-
+    select.con_id = "";
+    select.m_id = "";
+    select.s_id = "";
+    select.con_sum = "";
+    select.sub_name = "";
 }
-
 
 const edit = (id, day, mid, sid, sum, name) => {
     isOpen.value = !isOpen.value;
@@ -270,7 +266,7 @@ onMounted(() => {
             </div>
             <div class="container">
                 <div v-if="!data.obj">今日尚未紀錄</div>
-                <div v-else class="row" v-for="item in data.obj" :key="item.m_id"
+                <div v-else class="row" v-for="item in data.obj" :key="item.con_id"
                     :style="{ backgroundColor: rowcolor(item.m_id) }">
                     <span>
                         <img :src="getImageUrl(item.m_id)" alt="">
@@ -319,12 +315,16 @@ onMounted(() => {
         </div>
         <div class="bum">
             <div class="an">
-                <img src="@/assets/image/icon/mon.png" alt="">
-                <p>預算管理</p>
+                <router-link to="/bank">
+                    <img src="@/assets/image/icon/mon.png" alt="">
+                    <p>預算管理</p>
+                </router-link>
             </div>
             <div class="an">
-                <img src="@/assets/image/icon/analytics.png" alt="">
-                <p>分析報告</p>
+                <router-link to="/analysis">
+                    <img src="@/assets/image/icon/analytics.png" alt="">
+                    <p>分析報告</p>
+                </router-link>
             </div>
         </div>
 
@@ -365,7 +365,7 @@ main {
     }
 
     .board {
-        height: 75vh;
+        height: 73vh;
         display: flex;
         flex-direction: column;
         margin: 0.5rem 0;
@@ -429,6 +429,7 @@ main {
                         width: 28%;
                         @include fc;
                         background-color: #fff;
+
                         span {
                             width: 65%;
                             white-space: nowrap;

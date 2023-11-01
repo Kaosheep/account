@@ -12,7 +12,7 @@ import { notification } from 'ant-design-vue';
 const value = ref();
 const day = ref("")
 const onPanelChange = (value, mode) => {
-    console.log(value, mode);
+    // console.log(value, mode);
 };
 const onSelect = (date) => {
     day.value = `${date.$y}-${(date.$M) + 1}-${date.$D}`;
@@ -89,7 +89,7 @@ const gettoday = () => {
     const url = `http://localhost/dashboard/public/php/fetchdata.php`;
     axios
         .post(url, {
-            full: today.full
+            full: day.value
         })
         .then((response) => {
             const res = response.data;
@@ -106,6 +106,7 @@ const gettoday = () => {
             console.log(error.message);
         });
 }
+
 const gettype = () => {
     const url = `http://localhost/dashboard/public/php/fetchtype.php`;
     axios
@@ -161,19 +162,15 @@ const open = () => {
     if (isEdit.value) {
         isEdit.value = false;
         isOpen.value = !isOpen.value;
-
-        select.con_id = "";
-        select.m_id = "";
-        select.s_id = "";
-        select.con_sum = "";
-        select.sub_name = "";
-
     } else {
         isOpen.value = !isOpen.value;
         select.con_day = day.value;
-        
     }
-
+    select.con_id = "";
+    select.m_id = "";
+    select.s_id = "";
+    select.con_sum = "";
+    select.sub_name = "";
 }
 
 
@@ -216,7 +213,7 @@ const add = () => {
             m_id: select.m_id,
             con_sum: select.con_sum,
             s_id: select.s_id,
-            con_id : ""
+            con_id: ""
         })
         .then((response) => {
             let res = response.data;
@@ -293,7 +290,7 @@ onMounted(() => {
         </div>
         <div class="container">
             <div v-if="!data.obj">今日尚未紀錄</div>
-            <div v-else class="row" v-for="item in data.obj" :key="item.m_id"
+            <div v-else class="row" v-for="item in data.obj" :key="item.con_id"
                 :style="{ backgroundColor: rowcolor(item.m_id) }">
                 <span>
                     <img :src="getImageUrl(item.m_id)" alt="">
