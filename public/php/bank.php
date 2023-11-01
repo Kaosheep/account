@@ -16,27 +16,27 @@ try{
 
 
   if($type == "1"){
-    $sql = "select m.m_id, m.m_name,sum(c.con_sum) sum,m.m_ord,m.t from con_detail c 
+    $sql = "select m.m_id, m.m_name,sum(c.con_sum) sum,m.m_ord,m.t,s.sub_name,s.s_id from con_detail c 
       join maintype m on c.m_id = m.m_id 
-      join sub_type s on c.s_id = s.s_id WHERE m.t=0 and WEEK(con_day, 1) = WEEK(:day, 1) group by m_id order by m.m_ord"; 
+      join sub_type s on c.s_id = s.s_id WHERE m.t=1 and WEEK(con_day, 1) = WEEK(:day, 1) group by m_id order by m.m_ord"; 
       $dlt = $pdo->prepare($sql);
       $dlt->bindValue(":day", $full);
   }elseif($type == "2"){
-    $sql = "select m.m_id, m.m_name,sum(c.con_sum) sum,m.m_ord,m.t from con_detail c 
+    $sql = "select m.m_id, m.m_name,sum(c.con_sum) sum,m.m_ord,m.t,s.sub_name from con_detail c 
     join maintype m on c.m_id = m.m_id 
-    join sub_type s on c.s_id = s.s_id WHERE m.t=0 and MONTH(con_day) = MONTH(:day) group by m_id order by m.m_ord"; 
+    join sub_type s on c.s_id = s.s_id WHERE m.t=1 and MONTH(con_day) = MONTH(:day) group by m_id order by m.m_ord"; 
     $dlt = $pdo->prepare($sql);
     $dlt->bindValue(":day", $full);
   }elseif($type == "3"){
-    $sql = "select m.m_id, m.m_name,sum(c.con_sum) sum,m.m_ord,m.t from con_detail c 
+    $sql = "select m.m_id, m.m_name,sum(c.con_sum) sum,m.m_ord,m.t,s.sub_name from con_detail c 
     join maintype m on c.m_id = m.m_id 
-    join sub_type s on c.s_id = s.s_id WHERE m.t=0 and YEAR(con_day) = YEAR(:day) group by m_id order by m.m_ord"; 
+    join sub_type s on c.s_id = s.s_id WHERE m.t=1 and YEAR(con_day) = YEAR(:day) group by m_id order by m.m_ord"; 
     $dlt = $pdo->prepare($sql);
     $dlt->bindValue(":day", $full);
   }elseif($type == "4"){
-    $sql = "select m.m_id, m.m_name,sum(c.con_sum) sum,m.m_ord,m.t from con_detail c 
+    $sql = "select m.m_id, m.m_name,sum(c.con_sum) sum,m.m_ord,m.t,s.sub_name from con_detail c 
     join maintype m on c.m_id = m.m_id 
-    join sub_type s on c.s_id = s.s_id WHERE m.t=0 and con_day BETWEEN :start AND :end group by m_id order by m.m_ord"; 
+    join sub_type s on c.s_id = s.s_id WHERE m.t=1 and con_day BETWEEN :start AND :end group by m_id order by m.m_ord"; 
     $dlt = $pdo->prepare($sql);
     $dlt->bindValue(":start", $start);
     $dlt->bindValue(":end", $end);

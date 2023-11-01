@@ -15,7 +15,19 @@ const onPanelChange = (value, mode) => {
     // console.log(value, mode);
 };
 const onSelect = (date) => {
-    day.value = `${date.$y}-${(date.$M) + 1}-${date.$D}`;
+    let dastr,mostr;
+    if(date.$D < 10){
+        dastr = `0${date.$D}`
+    }else{
+        dastr = `${date.$D}`
+    }
+    if(date.$M < 9){
+        mostr = `0${date.$M+1}`
+    }else{
+        mostr = `${date.$M+1}`
+    }
+    day.value = `${date.$y}-${mostr}-${dastr}`;
+    select.con_day = day.value;
     const url = `http://localhost/dashboard/public/php/fetchdata.php`;
     axios
         .post(url, {
