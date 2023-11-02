@@ -27,6 +27,7 @@
     "sass": "^1.69.5",
     "sass-loader": "^13.3.2",
     "vite": "^4.4.11",
+    "vite-plugin-pwa": "^0.16.6",
     "webpack": "^5.89.0"
   }
 }

@@ -16,7 +16,7 @@ const btn = ref([
     { order: 12, name: '×', value: '*', type: 'operation', class: 'operation' },
     { order: 16, name: '/', value: '/', type: 'operation', class: 'operation' },
     { order: 13, name: '=', value: '=', type: 'calculate', class: 'result' },
-    { order: 14, name: 'c', value: 'c', type: 'reset', class: 'result' },
+    { order: 14, name: 'c', value: 'c', type: 'reset', class: 'reset' },
 ]);
 const inputnum = ref("");
 const mem = ref("");
@@ -25,18 +25,18 @@ const va = ref("");
 const pusht = (v, type) => {
     mem.value += v;
     if (type == "operation") {
-       inputnum.value += v;
+        inputnum.value += v;
 
-       return inputnum.value;
+        return inputnum.value;
     } else if (type == "calculate") {
         let res = eval((inputnum.value).replace(/\b0+(\d)/g, '$1'));
         console.log(res);
-        inputnum.value=res;
+        inputnum.value = res;
         return va.value = res;
-    }else if (type == "reset") {
+    } else if (type == "reset") {
         let res = 0;
-        inputnum.value="";
-        mem.value ="";
+        inputnum.value = "";
+        mem.value = "";
         console.log(res);
     }
 
@@ -54,9 +54,10 @@ const cal = () => {
         <input type="text" v-model="mem" readonly>
     </div> -->
     <div class="block">
-        <div v-for="b in btn" :class="b.class" :style="`order:${b.order}`" @click="[cal(b.value), pusht(b.value, b.type)]">{{
-            b.value
-        }}</div>
+        <div v-for="b in btn" :class="b.class" :style="`order:${b.order}`" @click="[cal(b.value), pusht(b.value, b.type)]">
+            {{
+                b.value
+            }}</div>
     </div>
 </template>
 <style lang="scss" scoped>
@@ -99,8 +100,13 @@ const cal = () => {
     }
 
     .result {
-        background-color: $pur;
+        background-color: $pig ;
         font-weight: 700;
+    }
+
+    .reset {
+        background-color: $mcolor;
+
     }
 }
 </style>

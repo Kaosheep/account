@@ -1,5 +1,3 @@
-// import './assets/main.css'
-
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import '@fortawesome/fontawesome-free/css/all.css'
@@ -11,9 +9,10 @@ import App from './App.vue'
 import router from './router'
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/reset.css';
+import { useRegisterSW } from 'virtual:pwa-register/vue';
 
 library.add(faUserSecret);
-
+useRegisterSW();
 
 const app = createApp(App)
 

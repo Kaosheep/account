@@ -1,4 +1,5 @@
 <script setup>
+// import {storeToPefs} from "pinia";
 import { ref, reactive, computed, onMounted } from 'vue';
 import axios from 'axios';
 import caculator from '@/components/caculator.vue'
@@ -171,48 +172,60 @@ const numin = (res) => {
 }
 
 const add = () => {
-    let mod = 1;
-    const url = `http://localhost/dashboard/public/php/insert.php`;
-    axios
-        .post(url, {
-            mod: mod,
-            con_day: select.con_day,
-            m_id: select.m_id,
-            con_sum: select.con_sum,
-            s_id: select.s_id,
-        })
-        .then((response) => {
-            let res = response.data;
-            openNotificationWithIcon('success', res);
-            open();
-            gettoday();
-        })
-        .catch((error) => {
-            console.log(error.message);
-        });
+    if (select.s_id == "") {
+        openNotificationWithIcon('warning', "未輸入類別");
+    } else if (select.con_sum == "") {
+        openNotificationWithIcon('warning', "未輸入金額");
+    } else {
+        let mod = 1;
+        const url = `http://localhost/dashboard/public/php/insert.php`;
+        axios
+            .post(url, {
+                mod: mod,
+                con_day: select.con_day,
+                m_id: select.m_id,
+                con_sum: select.con_sum,
+                s_id: select.s_id,
+            })
+            .then((response) => {
+                let res = response.data;
+                openNotificationWithIcon('success', res);
+                open();
+                gettoday();
+            })
+            .catch((error) => {
+                console.log(error.message);
+            });
+    }
+
 }
 const update = () => {
-    let mod = 2;
-    const url = `http://localhost/dashboard/public/php/insert.php`;
-    axios
-        .post(url, {
-            mod: mod,
-            con_day: select.con_day,
-            m_id: select.m_id,
-            con_sum: select.con_sum,
-            s_id: select.s_id,
-            con_id: select.con_id,
+    if (select.con_sum == "") {
+        openNotificationWithIcon('warning', "未輸入金額");
+    } else {
+        let mod = 2;
+        const url = `http://localhost/dashboard/public/php/insert.php`;
+        axios
+            .post(url, {
+                mod: mod,
+                con_day: select.con_day,
+                m_id: select.m_id,
+                con_sum: select.con_sum,
+                s_id: select.s_id,
+                con_id: select.con_id,
 
-        })
-        .then((response) => {
-            let res = response.data;
-            openNotificationWithIcon('success', res);
-            open();
-            gettoday();
-        })
-        .catch((error) => {
-            console.log(error.message);
-        });
+            })
+            .then((response) => {
+                let res = response.data;
+                openNotificationWithIcon('success', res);
+                open();
+                gettoday();
+            })
+            .catch((error) => {
+                console.log(error.message);
+            });
+    }
+
 }
 const del = () => {
     let mod = 3;
@@ -286,6 +299,7 @@ onMounted(() => {
                         <span class="date" v-show="isOpen"><input type="date" v-model="select.con_day"></span>
                         <span @click="del" class="can" v-show="isEdit"><font-awesome-icon
                                 :icon="['far', 'trash-can']" /></span>
+                        <span @click="open" class="back"></span>
                     </button>
                 </div>
                 <div class="typeblock">
@@ -294,7 +308,6 @@ onMounted(() => {
                             <img :src="getImageUrl(icon.m_id)" alt="">
                             <span>{{ icon.m_name }}</span>
                         </div>
-
                     </div>
                 </div>
                 <div class="subtype">
@@ -317,13 +330,13 @@ onMounted(() => {
             <div class="an">
                 <router-link to="/bank">
                     <img src="@/assets/image/icon/mon.png" alt="">
-                    <p>預算管理</p>
+                    <p>收入總覽</p>
                 </router-link>
             </div>
             <div class="an">
                 <router-link to="/analysis">
                     <img src="@/assets/image/icon/analytics.png" alt="">
-                    <p>分析報告</p>
+                    <p>消費分析</p>
                 </router-link>
             </div>
         </div>
@@ -491,9 +504,12 @@ main {
                 cursor: pointer;
                 height: 100%;
                 font-size: 1.25rem;
+                position: relative;
 
                 span {
                     margin-right: 0.5rem;
+                    position: relative;
+                    z-index: 1;
 
                     #plus {
                         font-size: 1.25rem;
@@ -501,6 +517,15 @@ main {
 
                     }
 
+                }
+
+                .back {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    top: 0;
+                    left: 0;
+                    z-index: 0;
                 }
 
                 .can {
@@ -683,4 +708,5 @@ main {
     }
 
 
-}</style>
+}
+</style>

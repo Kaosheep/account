@@ -24,6 +24,7 @@ dayjs.locale('zh-cn');
     padding: 1vh 0;
     .mainbroad {
         width: 95%;
+        max-width: 1280px;
         background-color: #ffffff;
         border-radius: 15px;
         box-shadow: 0 0 5px $mcolor;

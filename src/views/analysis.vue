@@ -4,6 +4,7 @@ import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import axios from 'axios';
 import { notification } from 'ant-design-vue';
+import navp from '@/components/navp.vue'
 const openNotificationWithIcon = (type, w) => {
     notification[type]({
         message: w,
@@ -74,6 +75,8 @@ const createChart = () => {
             }]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     position: 'bottom',
@@ -329,6 +332,7 @@ const clickbtn = () => {
 
 </script>
 <template>
+    <navp></navp>
     <main>
         <h1>消費分析</h1>
         <div class="sum">
@@ -410,6 +414,9 @@ main {
                 width: 98%;
                 margin: auto;
                 height: 47vh;
+                canvas{
+                    margin: auto;
+                }
             }
 
             span {

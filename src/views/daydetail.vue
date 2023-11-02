@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import zh_TW from 'ant-design-vue/lib/date-picker/locale/zh_TW';
 dayjs.locale('zh-tw');
 import caculator from '@/components/caculator.vue'
-
+import navp from '@/components/navp.vue'
 import { notification } from 'ant-design-vue';
 
 const value = ref();
@@ -15,16 +15,16 @@ const onPanelChange = (value, mode) => {
     // console.log(value, mode);
 };
 const onSelect = (date) => {
-    let dastr,mostr;
-    if(date.$D < 10){
+    let dastr, mostr;
+    if (date.$D < 10) {
         dastr = `0${date.$D}`
-    }else{
+    } else {
         dastr = `${date.$D}`
     }
-    if(date.$M < 9){
-        mostr = `0${date.$M+1}`
-    }else{
-        mostr = `${date.$M+1}`
+    if (date.$M < 9) {
+        mostr = `0${date.$M + 1}`
+    } else {
+        mostr = `${date.$M + 1}`
     }
     select.con_day = `${date.$y}-${mostr}-${dastr}`;
     const url = `http://localhost/dashboard/public/php/fetchdata.php`;
@@ -212,49 +212,59 @@ const numin = (res) => {
 }
 
 const add = () => {
-    let mod = 1;
-    const url = `http://localhost/dashboard/public/php/insert.php`;
-    axios
-        .post(url, {
-            mod: mod,
-            con_day: select.con_day,
-            m_id: select.m_id,
-            con_sum: select.con_sum,
-            s_id: select.s_id,
-            con_id: ""
-        })
-        .then((response) => {
-            let res = response.data;
-            openNotificationWithIcon('success', res);
-            open();
-            gettoday();
-        })
-        .catch((error) => {
-            console.log(error.message);
-        });
+    if (select.s_id == "") {
+        openNotificationWithIcon('warning', "未輸入類別");
+    } else if (select.con_sum == "") {
+        openNotificationWithIcon('warning', "未輸入金額");
+    } else {
+        let mod = 1;
+        const url = `http://localhost/dashboard/public/php/insert.php`;
+        axios
+            .post(url, {
+                mod: mod,
+                con_day: select.con_day,
+                m_id: select.m_id,
+                con_sum: select.con_sum,
+                s_id: select.s_id,
+                con_id: ""
+            })
+            .then((response) => {
+                let res = response.data;
+                openNotificationWithIcon('success', res);
+                open();
+                gettoday();
+            })
+            .catch((error) => {
+                console.log(error.message);
+            });
+    }
 }
 const update = () => {
-    let mod = 2;
-    const url = `http://localhost/dashboard/public/php/insert.php`;
-    axios
-        .post(url, {
-            mod: mod,
-            con_day: select.con_day,
-            m_id: select.m_id,
-            con_sum: select.con_sum,
-            s_id: select.s_id,
-            con_id: select.con_id,
+    if (select.con_sum == "") {
+        openNotificationWithIcon('warning', "未輸入金額");
+    } else {
+        let mod = 2;
+        const url = `http://localhost/dashboard/public/php/insert.php`;
+        axios
+            .post(url, {
+                mod: mod,
+                con_day: select.con_day,
+                m_id: select.m_id,
+                con_sum: select.con_sum,
+                s_id: select.s_id,
+                con_id: select.con_id,
 
-        })
-        .then((response) => {
-            let res = response.data;
-            openNotificationWithIcon('success', res);
-            open();
-            gettoday();
-        })
-        .catch((error) => {
-            console.log(error.message);
-        });
+            })
+            .then((response) => {
+                let res = response.data;
+                openNotificationWithIcon('success', res);
+                open();
+                gettoday();
+            })
+            .catch((error) => {
+                console.log(error.message);
+            });
+    }
 }
 const del = () => {
     let mod = 3;
@@ -286,6 +296,7 @@ onMounted(() => {
 })
 </script>
 <template >
+    <navp></navp>
     <h1>消費明細</h1>
     <div class="can">
         <a-calendar v-model:value="value" :fullscreen="false" @panelChange="onPanelChange" @select="onSelect"
@@ -317,6 +328,7 @@ onMounted(() => {
                     <span @click="open" v-show="!isOpen">新增明細</span>
                     <span class="date" v-show="isOpen"><input type="date" v-model="select.con_day"></span>
                     <span @click="del" class="can" v-show="isEdit"><font-awesome-icon :icon="['far', 'trash-can']" /></span>
+                    <span @click="open" class="back"></span>
                 </button>
             </div>
             <div class="typeblock">
@@ -482,16 +494,26 @@ h1 {
                 cursor: pointer;
                 height: 100%;
                 font-size: 1.25rem;
+                position: relative;
 
                 span {
                     margin-right: 0.5rem;
-
+                    position: relative;
+                    z-index: 1;
                     #plus {
                         font-size: 1.25rem;
                         transition: .5s;
 
                     }
 
+                }
+                .back {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    top: 0;
+                    left: 0;
+                    z-index: 0;
                 }
 
                 .can {

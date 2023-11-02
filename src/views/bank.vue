@@ -5,6 +5,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import axios from 'axios';
 import { notification } from 'ant-design-vue';
 import pattern from 'patternomaly';
+import navp from '@/components/navp.vue'
 
 const openNotificationWithIcon = (type, w) => {
     notification[type]({
@@ -67,11 +68,12 @@ const createChart = () => {
             ]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     position: 'bottom',
                     labels: { usePointStyle: true }
-
                 },
                 datalabels: {
                     labels: {
@@ -91,8 +93,6 @@ const createChart = () => {
                         }
 
                     },
-                    // anchor: 'end',
-                    // align: 'end'
                 }
             },
         },
@@ -357,6 +357,7 @@ const createlChart = () => {
 }
 </script>
 <template>
+    <navp></navp>
     <main>
         <h1>收入總覽</h1>
 
@@ -394,22 +395,6 @@ const createlChart = () => {
                     </div>
                 </div>
             </div>
-            <!-- <table>
-                <thead>
-                    <th>月份</th>
-                    <th>收入總額</th>
-                </thead>
-                <tbody>
-                    <tr v-for="m in data.monarr0">
-                        <td>{{ m.month }}</td>
-                        <td>{{ m.sum }} 元</td>
-                    </tr>
-                    <tr v-for="m in data.monarr1">
-                        <td>{{ m.month }}</td>
-                        <td>{{ m.sum }} 元</td>
-                    </tr>
-                </tbody>
-            </table> -->
         </div>
 
         <div class="pchartb">
@@ -573,53 +558,7 @@ main {
             }
         }
 
-        // table {
-        //     width: 100%;
-
-        //     thead {
-        //         width: 100%;
-        //         display: block;
-        //         border-bottom: 1px solid $mcolor;
-        //         line-height: 2;
-
-        //         th {
-        //             width: 300px;
-        //         }
-        //     }
-
-        //     tbody {
-        //         display: block;
-        //         height: 30vh;
-        //         overflow-y: scroll;
-
-        //         &::-webkit-scrollbar {
-        //             width: 7px;
-        //             height: 7px;
-        //             background-color: #fff;
-        //             border-radius: 4px;
-        //         }
-
-        //         &::-webkit-scrollbar-track {
-        //             background: #fff;
-        //             border-radius: 4px;
-        //         }
-
-        //         &::-webkit-scrollbar-thumb {
-        //             background: $subcolor;
-        //             border-radius: 4px;
-        //         }
-
-        //         tr {
-        //             border-bottom: 1px solid $mcolor;
-
-        //             td {
-        //                 width: 300px;
-        //                 text-align: center;
-        //                 line-height: 2;
-        //             }
-        //         }
-        //     }
-        // }
+    
     }
 
     .pchartb {
@@ -658,7 +597,13 @@ main {
             margin: 0.5rem 0;
         }
     }
-
+    .pchartb{
+        .pchart{
+            canvas{
+                margin: auto;
+            }
+        }
+    }
     .mondlt {
         h2 {
             font-size: 16px;
@@ -676,7 +621,8 @@ main {
                 line-height: 2;
 
                 th {
-                    width: 300px;
+                    width: 500px;
+
                 }
             }
 
@@ -684,6 +630,7 @@ main {
                 display: block;
                 height: 30vh;
                 overflow-y: scroll;
+                width: 100%;
 
                 &::-webkit-scrollbar {
                     width: 7px;
@@ -704,9 +651,9 @@ main {
 
                 tr {
                     border-bottom: 1px solid $mcolor;
-
+                    width: 100%;
                     td {
-                        width: 300px;
+                        width: 500px;
                         text-align: center;
                         line-height: 2;
                     }
@@ -723,7 +670,7 @@ main {
         margin: 0.5rem 0;
 
         span {
-            width: 30%;
+            width: 33.33%;
             line-height: 1.5;
             background-color: $mcolor;
             text-align: center;
