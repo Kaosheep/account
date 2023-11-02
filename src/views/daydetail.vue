@@ -26,12 +26,11 @@ const onSelect = (date) => {
     }else{
         mostr = `${date.$M+1}`
     }
-    day.value = `${date.$y}-${mostr}-${dastr}`;
-    select.con_day = day.value;
+    select.con_day = `${date.$y}-${mostr}-${dastr}`;
     const url = `http://localhost/dashboard/public/php/fetchdata.php`;
     axios
         .post(url, {
-            full: day.value
+            full: select.con_day
         })
         .then((response) => {
             const res = response.data;
@@ -77,9 +76,7 @@ const timeFormate = () => {
         newdate.getDate() < 10 ? "0" + newdate.getDate() : newdate.getDate()
     );
 
-    today.full = String(`${today.year}-${today.month}-${today.date}`);
-    day.value = today.full;
-    select.con_day = today.full;
+    select.con_day = String(`${today.year}-${today.month}-${today.date}`);
     const dayNames = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
     today.day = dayNames[new Date().getDay()];
 };
@@ -101,7 +98,7 @@ const gettoday = () => {
     const url = `http://localhost/dashboard/public/php/fetchdata.php`;
     axios
         .post(url, {
-            full: day.value
+            full: select.con_day
         })
         .then((response) => {
             const res = response.data;
@@ -176,7 +173,6 @@ const open = () => {
         isOpen.value = !isOpen.value;
     } else {
         isOpen.value = !isOpen.value;
-        select.con_day = day.value;
     }
     select.con_id = "";
     select.m_id = "";
@@ -298,7 +294,7 @@ onMounted(() => {
 
     <div class="board">
         <div class="title">
-            <p class="date">{{ day }}</p>
+            <p class="date">{{ select.con_day }}</p>
         </div>
         <div class="container">
             <div v-if="!data.obj">今日尚未紀錄</div>

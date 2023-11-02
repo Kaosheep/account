@@ -9,50 +9,59 @@ try{
   
   $type = $data->type;
   $full = $data->full;
-  if($type == "4"){
+  if($type == "3"){
       $start = $data->start;
       $end = $data->end;
   }
 
 
   if($type == "1"){
-    $sql = "select m.m_id, m.m_name,sum(c.con_sum) sum,m.m_ord,m.t,s.sub_name,s.s_id from con_detail c 
-      join maintype m on c.m_id = m.m_id 
-      join sub_type s on c.s_id = s.s_id WHERE m.t=1 and WEEK(con_day, 1) = WEEK(:day, 1) group by m_id order by m.m_ord"; 
+      $sql = "select m.m_id, m.m_name,sum(c.con_sum) sum,m.m_ord,m.t,s.sub_name,s.s_id from con_detail c join maintype m on c.m_id = m.m_id 
+      join sub_type s on c.s_id = s.s_id WHERE m.t=1 and MONTH(con_day) = MONTH(:day) group by s.s_id"; 
+
+      $sql2 = "select m.m_id, m.m_name,c.con_sum,m.m_ord,m.t,s.sub_name,s.s_id,con_day from con_detail c join maintype m on c.m_id = m.m_id join sub_type s on c.s_id = s.s_id WHERE m.t=1 and MONTH(con_day) = MONTH(:day) order by con_day DESC"; 
       $dlt = $pdo->prepare($sql);
       $dlt->bindValue(":day", $full);
+      $dlt2 = $pdo->prepare($sql2);
+      $dlt2->bindValue(":day", $full);
   }elseif($type == "2"){
-    $sql = "select m.m_id, m.m_name,sum(c.con_sum) sum,m.m_ord,m.t,s.sub_name from con_detail c 
-    join maintype m on c.m_id = m.m_id 
-    join sub_type s on c.s_id = s.s_id WHERE m.t=1 and MONTH(con_day) = MONTH(:day) group by m_id order by m.m_ord"; 
+    $sql = "select m.m_id, m.m_name,sum(c.con_sum) sum,m.m_ord,m.t,s.sub_name,s.s_id from con_detail c 
+      join maintype m on c.m_id = m.m_id 
+      join sub_type s on c.s_id = s.s_id WHERE m.t=1 and YEAR(con_day) = YEAR(:day) group by s.s_id"; 
+  
+      $sql2 = "select m.m_id, m.m_name,c.con_sum,m.m_ord,m.t,s.sub_name,s.s_id,con_day from con_detail c join maintype m on c.m_id = m.m_id join sub_type s on c.s_id = s.s_id WHERE m.t=1 and YEAR(con_day) = YEAR(:day) order by con_day DESC"; 
     $dlt = $pdo->prepare($sql);
     $dlt->bindValue(":day", $full);
+    $dlt2 = $pdo->prepare($sql2);
+      $dlt2->bindValue(":day", $full);
   }elseif($type == "3"){
-    $sql = "select m.m_id, m.m_name,sum(c.con_sum) sum,m.m_ord,m.t,s.sub_name from con_detail c 
-    join maintype m on c.m_id = m.m_id 
-    join sub_type s on c.s_id = s.s_id WHERE m.t=1 and YEAR(con_day) = YEAR(:day) group by m_id order by m.m_ord"; 
-    $dlt = $pdo->prepare($sql);
-    $dlt->bindValue(":day", $full);
-  }elseif($type == "4"){
-    $sql = "select m.m_id, m.m_name,sum(c.con_sum) sum,m.m_ord,m.t,s.sub_name from con_detail c 
-    join maintype m on c.m_id = m.m_id 
-    join sub_type s on c.s_id = s.s_id WHERE m.t=1 and con_day BETWEEN :start AND :end group by m_id order by m.m_ord"; 
+    $sql = "select m.m_id, m.m_name,sum(c.con_sum) sum,m.m_ord,m.t,s.sub_name,s.s_id from con_detail c 
+      join maintype m on c.m_id = m.m_id 
+      join sub_type s on c.s_id = s.s_id WHERE m.t=1 and con_day BETWEEN :start AND :end group by s.s_id"; 
+      $sql2 = "select m.m_id, m.m_name,c.con_sum,m.m_ord,m.t,s.sub_name,s.s_id,con_day from con_detail c join maintype m on c.m_id = m.m_id join sub_type s on c.s_id = s.s_id WHERE m.t=1 and con_day BETWEEN :start AND :end order by con_day DESC"; 
     $dlt = $pdo->prepare($sql);
     $dlt->bindValue(":start", $start);
     $dlt->bindValue(":end", $end);
+    $dlt2 = $pdo->prepare($sql2);
+    $dlt2->bindValue(":start", $start);
+    $dlt2->bindValue(":end", $end);
   }
   
   $dlt->execute();
+  $dlt2->execute();
   
 
   
   if ($dlt->rowCount() === 0) { 
     $dlts = 0;
+    $dlts2 = 0;
   } else {
     $dlts = $dlt->fetchAll(PDO::FETCH_ASSOC);
+    $dlts2 = $dlt2->fetchAll(PDO::FETCH_ASSOC);
   }
+    $dltarr = array("1" => $dlts, "2" => $dlts2);
+    echo json_encode($dltarr);
 
-    echo json_encode($dlts);
   
 } catch (PDOException $e) {
     echo "錯誤行號 : ", $e->getLine(), "<br>";
