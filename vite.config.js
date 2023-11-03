@@ -6,7 +6,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 const imageUrl = `${process.env.BASE_URL}favicon.ico`;
 
 export default defineConfig({
-  base: '/accountbook',
+  // base: '/accountbook',
   plugins: [
     vue(),
     VitePWA({

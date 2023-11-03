@@ -1,4 +1,3 @@
-
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue';
 import axios from 'axios';
@@ -8,9 +7,10 @@ dayjs.locale('zh-tw');
 import caculator from '@/components/caculator.vue'
 import navp from '@/components/navp.vue'
 import { notification } from 'ant-design-vue';
-
+import { useEnvironmentStore } from '@/stores/path.js'
+const counterStore = useEnvironmentStore();
 const value = ref();
-const day = ref("")
+
 const onPanelChange = (value, mode) => {
     // console.log(value, mode);
 };
@@ -27,7 +27,7 @@ const onSelect = (date) => {
         mostr = `${date.$M + 1}`
     }
     select.con_day = `${date.$y}-${mostr}-${dastr}`;
-    const url = `http://localhost/dashboard/public/php/fetchdata.php`;
+    const url = `${counterStore.publicPath}fetchdata.php`;
     axios
         .post(url, {
             full: select.con_day
@@ -95,7 +95,7 @@ const data = reactive({
 
 
 const gettoday = () => {
-    const url = `http://localhost/dashboard/public/php/fetchdata.php`;
+    const url = `${counterStore.publicPath}fetchdata.php`;
     axios
         .post(url, {
             full: select.con_day
@@ -117,7 +117,7 @@ const gettoday = () => {
 }
 
 const gettype = () => {
-    const url = `http://localhost/dashboard/public/php/fetchtype.php`;
+    const url = `${counterStore.publicPath}fetchtype.php`;
     axios
         .get(url)
         .then((response) => {
@@ -218,7 +218,7 @@ const add = () => {
         openNotificationWithIcon('warning', "未輸入金額");
     } else {
         let mod = 1;
-        const url = `http://localhost/dashboard/public/php/insert.php`;
+        const url = `${counterStore.publicPath}insert.php`;
         axios
             .post(url, {
                 mod: mod,
@@ -244,7 +244,7 @@ const update = () => {
         openNotificationWithIcon('warning', "未輸入金額");
     } else {
         let mod = 2;
-        const url = `http://localhost/dashboard/public/php/insert.php`;
+        const url = `${counterStore.publicPath}insert.php`;
         axios
             .post(url, {
                 mod: mod,
@@ -268,7 +268,7 @@ const update = () => {
 }
 const del = () => {
     let mod = 3;
-    const url = `http://localhost/dashboard/public/php/insert.php`;
+    const url = `${counterStore.publicPath}insert.php`;
     axios
         .post(url, {
             mod: mod,

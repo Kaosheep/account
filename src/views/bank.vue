@@ -5,8 +5,10 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import axios from 'axios';
 import { notification } from 'ant-design-vue';
 import pattern from 'patternomaly';
-import navp from '@/components/navp.vue'
-
+import navp from '@/components/navp.vue';
+import { read, utils, writeFile, writeFileXLSX } from 'xlsx';
+import { useEnvironmentStore } from '@/stores/path.js'
+const counterStore = useEnvironmentStore();
 const openNotificationWithIcon = (type, w) => {
     notification[type]({
         message: w,
@@ -21,22 +23,7 @@ onMounted(() => {
     eachm();
 });
 
-const pay = computed(() => {
-    if (data.arr) {
-        return data.arr.filter((d) => d.t === "0");
-    } else {
-        return 0
-    }
 
-});
-const mon = computed(() => {
-    if (data.arr) {
-        return (data.arr.map((d) => d.sum)).reduce((acc, val) => acc + parseInt(val), 0);
-    } else {
-        return 0
-    }
-
-});
 
 const colorarr = ref([]);
 
@@ -91,7 +78,6 @@ const createChart = () => {
                         } else {
                             return ""
                         }
-
                     },
                 }
             },
@@ -103,7 +89,7 @@ const createChart = () => {
 const updateChart = (newData) => {
     chart.data.labels = newData.map(row => row.sub_name);
     chart.data.datasets[0].data = newData.map(c => parseInt(c.sum));
-    chart.data.datasets[0].backgroundColor = pattern.generate(Object.values(colorarr.value));
+    chart.data.datasets[0].backgroundColor = [];
     chart.update();
 }
 const nodata = () => {
@@ -145,32 +131,39 @@ const data = reactive({
     monarr1: [],
     dltarr: []
 })
-const merarr = data.monarr0.concat(data.monarr1);
+
 const getbyMon = () => {
-    const url = `http://localhost/dashboard/public/php/bank.php`;
+    const url = `${counterStore.publicPath}bank.php`;
     axios
         .post(url, {
             type: "1",
             full: today.full
         })
         .then((response) => {
-            if (response.data) {
-                if (chart) {
+            if (chart) {
+                if (response.data[1].length > 0) {
                     data.arr = response.data[1];
                     data.dltarr = response.data[2];
                     colorarr.value = [];
                     getcolorarr();
                     updateChart(response.data[1]);
                 } else {
+                    data.arr = [];
+                    data.dltarr = [];
+                    nodata();
+                }
+
+            } else {
+                if (response.data[1].length > 0) {
                     data.arr = response.data[1];
                     data.dltarr = response.data[2];
                     getcolorarr();
                     createChart();
+                } else {
+                    createChart();
+                    nodata();
                 }
 
-            } else {
-                nodata();
-                data.arr = response.data;
             }
         })
         .catch((error) => {
@@ -178,14 +171,14 @@ const getbyMon = () => {
         });
 };
 const getbyYear = () => {
-    const url = `http://localhost/dashboard/public/php/bank.php`;
+    const url = `${counterStore.publicPath}bank.php`;
     axios
         .post(url, {
             type: "2",
             full: today.full
         })
         .then((response) => {
-            if (response.data) {
+            if (response.data[1].length > 0) {
                 data.arr = response.data[1];
                 data.dltarr = response.data[2];
                 colorarr.value = [];
@@ -193,8 +186,8 @@ const getbyYear = () => {
                 updateChart(response.data[1]);
             } else {
                 nodata();
-                data.arr = response.data[1];
-                data.dltarr = response.data[2];
+                data.arr = [];
+                data.dltarr = [];
             }
         })
         .catch((error) => {
@@ -225,7 +218,7 @@ const getbyuser = () => {
         openNotificationWithIcon('warning', "未輸入結束日期");
 
     } else {
-        const url = `http://localhost/dashboard/public/php/bank.php`;
+        const url = `${counterStore.publicPath}bank.php`;
         axios
             .post(url, {
                 type: "3",
@@ -234,7 +227,7 @@ const getbyuser = () => {
                 end: selectday.value.end,
             })
             .then((response) => {
-                if (response.data) {
+                if (response.data[1].length > 0) {
                     data.arr = response.data[1];
                     data.dltarr = response.data[2];
                     colorarr.value = [];
@@ -243,8 +236,8 @@ const getbyuser = () => {
                     selectopen.value = false;
                 } else {
                     nodata();
-                    data.arr = response.data[1];
-                    data.dltarr = response.data[2];
+                    data.arr = [];
+                    data.dltarr = [];
                     selectopen.value = false;
                 }
             })
@@ -257,7 +250,7 @@ const getbyuser = () => {
 
 }
 const clickbtn = () => {
-    const btns = [...document.querySelectorAll('.board .time span')];
+    const btns = [...document.querySelectorAll('.pchartb .time span')];
     let abtn = null;
     btns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
@@ -274,27 +267,19 @@ const clickbtn = () => {
 const limit = ref("6")
 
 const eachm = () => {
-    const url = `http://localhost/dashboard/public/php/bankmon.php`;
+    const url = `${counterStore.publicPath}bankmon.php`;
     axios
         .post(url, {
             limit: limit.value
         })
         .then((response) => {
-            if (response.data) {
-                data.monarr0 = response.data[1];
-                data.monarr1 = response.data[2];
-                if (lchart) {
-                    updatelChart(response.data[1], response.data[2]);
-                } else {
-                    createlChart();
-                }
-
+            data.monarr0 = response.data[1];
+            data.monarr1 = response.data[2];
+            if (lchart) {
+                updatelChart(response.data[1], response.data[2]);
             } else {
-                data.monarr0 = response.data[1];
-                data.monarr1 = response.data[2];
-                noldata();
+                createlChart();
             }
-
         })
         .catch((error) => {
             console.log(error.message);
@@ -305,11 +290,6 @@ const updatelChart = (newData1, newData2) => {
     lchart.data.labels = newData1.map(row => row.month);
     lchart.data.datasets[0].data = newData1.map(c => parseInt(c.sum));
     lchart.data.datasets[1].data = newData2.map(c => parseInt(c.sum));
-    lchart.update();
-}
-const noldata = () => {
-    lchart.data.labels = ["沒有資料"];
-    lchart.data.datasets[0].data = ["0"];
     lchart.update();
 }
 
@@ -355,6 +335,20 @@ const createlChart = () => {
         },
     });
 }
+const myTable = ref(null);
+const exportFile = () => {
+    const workbook = utils.book_new();
+
+    const ws = utils.aoa_to_sheet([
+        ['收入日期', '收入類別', '收入金額'],
+        ...data.dltarr.map(d => [d.con_day, d.sub_name, d.con_sum + ' 元']),
+    ]);
+
+    utils.book_append_sheet(workbook, ws, 'Sheet1');
+
+    writeFile(workbook, 'table_data.xlsx');
+};
+
 </script>
 <template>
     <navp></navp>
@@ -412,30 +406,37 @@ const createlChart = () => {
                     <th>收入來源</th>
                     <th>總額</th>
                 </thead>
-                <tr v-for="s in data.arr">
+                <tr v-if="data.dltarr.length > 0" v-for="s in data.arr">
                     <td>{{ s.sub_name }}</td>
                     <td>{{ s.sum }} 元</td>
+                </tr>
+                <tr v-else>
+                    <td colspan="2">查無資料</td>
                 </tr>
             </table>
         </div>
 
         <div class="mondlt">
             <h2>收入明細</h2>
-            <table>
+            <table class="table" ref="myTable">
                 <thead>
                     <th>收入日期</th>
                     <th>收入類別</th>
                     <th>收入金額</th>
                 </thead>
                 <tbody>
-                    <tr v-for="d in data.dltarr">
+                    <tr v-if="data.dltarr.length > 0" v-for="d in data.dltarr">
                         <td>{{ d.con_day }}</td>
                         <td>{{ d.sub_name }}</td>
                         <td>{{ d.con_sum }} 元</td>
                     </tr>
+                    <tr v-else>
+                        <td colspan="2">查無資料</td>
+                    </tr>
                 </tbody>
 
             </table>
+            <button @click="exportFile">匯出</button>
         </div>
         <div class="settime" v-if="selectopen">
             <h2>輸入日期</h2>
@@ -493,6 +494,7 @@ main {
                 width: 100%;
                 border-bottom: 1px solid $pur;
                 line-height: 2;
+
                 span {
                     display: inline-block;
                     width: 32.3%;
@@ -549,6 +551,7 @@ main {
                     .row {
                         line-height: 2;
                         text-align: center;
+
                         &:nth-child(2n) {
                             background-color: $mcolor;
 
@@ -558,7 +561,7 @@ main {
             }
         }
 
-    
+
     }
 
     .pchartb {
@@ -597,13 +600,15 @@ main {
             margin: 0.5rem 0;
         }
     }
-    .pchartb{
-        .pchart{
-            canvas{
+
+    .pchartb {
+        .pchart {
+            canvas {
                 margin: auto;
             }
         }
     }
+
     .mondlt {
         h2 {
             font-size: 16px;
@@ -628,7 +633,7 @@ main {
 
             tbody {
                 display: block;
-                height: 30vh;
+                height: 20vh;
                 overflow-y: scroll;
                 width: 100%;
 
@@ -652,6 +657,7 @@ main {
                 tr {
                     border-bottom: 1px solid $mcolor;
                     width: 100%;
+
                     td {
                         width: 500px;
                         text-align: center;
@@ -662,6 +668,21 @@ main {
 
         }
 
+        button {
+            width: 30%;
+            display: block;
+            margin: auto;
+            padding: 5px;
+            background-color: $pig;
+            border: none;
+            border-radius: 10px;
+            transition: .3s;
+
+            &:active {
+                background-color: $subcolor;
+
+            }
+        }
     }
 
     .time {

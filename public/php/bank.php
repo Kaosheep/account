@@ -53,8 +53,8 @@ try{
 
   
   if ($dlt->rowCount() === 0) { 
-    $dlts = 0;
-    $dlts2 = 0;
+    $dlts = [] ;
+    $dlts2 = [];
   } else {
     $dlts = $dlt->fetchAll(PDO::FETCH_ASSOC);
     $dlts2 = $dlt2->fetchAll(PDO::FETCH_ASSOC);

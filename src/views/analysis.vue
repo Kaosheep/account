@@ -5,6 +5,8 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import axios from 'axios';
 import { notification } from 'ant-design-vue';
 import navp from '@/components/navp.vue'
+import { useEnvironmentStore } from '@/stores/path.js'
+const counterStore = useEnvironmentStore();
 const openNotificationWithIcon = (type, w) => {
     notification[type]({
         message: w,
@@ -111,7 +113,7 @@ const updateChart = (newData) => {
 }
 const nodata = () => {
     chart.data.labels = ["沒有資料"];
-    chart.data.datasets[0].data = ["0"];
+    chart.data.datasets[0].data = [""];
     chart.update();
 }
 const getImageUrl = (id) => {
@@ -149,7 +151,7 @@ const data = reactive({
 })
 
 const gettoday = () => {
-    const url = `http://localhost/dashboard/public/php/fetchbydayt.php`;
+    const url = `${counterStore.publicPath}fetchbydayt.php`;
     axios
         .post(url, {
             type: "1",
@@ -172,7 +174,7 @@ const gettoday = () => {
 
 }
 const getbyweek = () => {
-    const url = `http://localhost/dashboard/public/php/fetchbydayt.php`;
+    const url = `${counterStore.publicPath}fetchbydayt.php`;
     axios
         .post(url, {
             type: "1",
@@ -196,7 +198,7 @@ const getbyweek = () => {
 }
 
 const getbyMon = () => {
-    const url = `http://localhost/dashboard/public/php/fetchbydayt.php`;
+    const url = `${counterStore.publicPath}fetchbydayt.php`;
     axios
         .post(url, {
             type: "2",
@@ -218,7 +220,7 @@ const getbyMon = () => {
         });
 };
 const getbyYear = () => {
-    const url = `http://localhost/dashboard/public/php/fetchbydayt.php`;
+    const url = `${counterStore.publicPath}fetchbydayt.php`;
     axios
         .post(url, {
             type: "3",
@@ -251,7 +253,7 @@ const openselect = () => {
 const closeselect = () => {
     selectopen.value = false;
     selectday.value.start = "",
-        selectday.value.end = ""
+    selectday.value.end = ""
 };
 
 
@@ -263,7 +265,7 @@ const getbyuser = () => {
         openNotificationWithIcon('warning', "未輸入結束日期");
 
     } else {
-        const url = `http://localhost/dashboard/public/php/fetchbydayt.php`;
+        const url = `${counterStore.publicPath}fetchbydayt.php`;
         axios
             .post(url, {
                 type: "4",
@@ -315,7 +317,7 @@ const rowcolor = (id) => {
 };
 const clickbtn = () => {
     const btns = [...document.querySelectorAll('.board .time span')];
-    let abtn = null;
+
     btns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
             btns.forEach((btn) => {

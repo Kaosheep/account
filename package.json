@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "depoly": "npm run bulid && firebase deploy"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.2",
@@ -20,7 +21,8 @@
     "patternomaly": "^1.3.2",
     "pinia": "^2.1.7",
     "vue": "^3.3.4",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.4.0",
