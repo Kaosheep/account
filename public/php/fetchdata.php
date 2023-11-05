@@ -15,7 +15,7 @@ try{
   $dlt = $pdo->prepare($sql);
   $dlt->bindValue(":con_day", $full);
   $dlt->execute();
-  $sql2 = "select sum(con_sum) from con_detail where con_day=:con_day";
+  $sql2 = "select sum(c.con_sum) sum from con_detail c join maintype m on c.m_id=m.m_id where m.t=0 and con_day=:con_day";
   $sum = $pdo->prepare($sql2);
   $sum->bindValue(":con_day", $full);
   $sum->execute();

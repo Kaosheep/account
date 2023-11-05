@@ -175,6 +175,8 @@ const gettoday = () => {
 }
 const getbyweek = () => {
     const url = `${counterStore.publicPath}fetchbydayt.php`;
+    selectday.value.start ="";
+    selectday.value.end ="";
     axios
         .post(url, {
             type: "1",
@@ -199,6 +201,8 @@ const getbyweek = () => {
 
 const getbyMon = () => {
     const url = `${counterStore.publicPath}fetchbydayt.php`;
+    selectday.value.start ="";
+    selectday.value.end ="";
     axios
         .post(url, {
             type: "2",
@@ -221,6 +225,8 @@ const getbyMon = () => {
 };
 const getbyYear = () => {
     const url = `${counterStore.publicPath}fetchbydayt.php`;
+    selectday.value.start ="";
+    selectday.value.end ="";
     axios
         .post(url, {
             type: "3",
@@ -253,7 +259,7 @@ const openselect = () => {
 const closeselect = () => {
     selectopen.value = false;
     selectday.value.start = "",
-    selectday.value.end = ""
+        selectday.value.end = ""
 };
 
 
@@ -363,6 +369,7 @@ const clickbtn = () => {
                 <span @click="getbyYear">今年</span>
                 <span @click="openselect">自訂</span>
             </div>
+            <p style="font-size: 14px;" v-if="selectday.start">查詢期間 : <span>{{ selectday.start }}</span>~<span>{{ selectday.end }}</span></p>
             <table>
                 <thead>
                     <th>消費類別</th>
@@ -416,7 +423,8 @@ main {
                 width: 98%;
                 margin: auto;
                 height: 47vh;
-                canvas{
+
+                canvas {
                     margin: auto;
                 }
             }
@@ -518,4 +526,5 @@ main {
             }
         }
     }
-}</style>
+}
+</style>

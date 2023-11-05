@@ -89,7 +89,9 @@ const createChart = () => {
 const updateChart = (newData) => {
     chart.data.labels = newData.map(row => row.sub_name);
     chart.data.datasets[0].data = newData.map(c => parseInt(c.sum));
-    chart.data.datasets[0].backgroundColor = [];
+    colorarr.value = [];
+    getcolorarr();
+    chart.data.datasets[0].backgroundColor = pattern.generate(Object.values(colorarr.value))
     chart.update();
 }
 const nodata = () => {

@@ -61,10 +61,10 @@ const gettoday = () => {
         })
         .then((response) => {
             const res = response.data;
-            if (res["result"]["sum(con_sum)"]) {
-                data.sum = res["result"]["sum(con_sum)"];
+            if (res["result"]["sum"]) {
+                data.sum = res["result"]["sum"];
             } else {
-                data.sum = [];
+                data.sum = 0;
             };
 
             data.obj = res["data"];

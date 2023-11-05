@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "depoly": "npm run bulid && firebase deploy"
+    "depoly": "vite build && firebase deploy"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.2",
