@@ -16,7 +16,7 @@ const myChart = ref(null);
 
 onMounted(() => {
     timeFormate();
-    gettoday();
+    getbyweek();
     clickbtn();
 });
 
@@ -92,11 +92,18 @@ const createChart = () => {
                         }
                     },
                     formatter: (value, context) => {
-                        const p = data.arr.map(c => parseInt(c.sum));
-                        const totalv = p.reduce((total, p) => total + p, 0);
-                        const pval = (value / totalv * 100).toFixed(1);
-                        const display = [`${context.chart.data.labels[context.dataIndex]}`, `${pval}%`]
-                        return display;
+
+                        if (value) {
+                            const p = data.arr.map(c => parseInt(c.sum));
+                            const totalv = p.reduce((total, p) => total + p, 0);
+                            const pval = (value / totalv * 100).toFixed(1);
+                            const display = [`${context.chart.data.labels[context.dataIndex]}`, `${pval}%`]
+                            return display;
+                        } else {
+                            const display = [`${context.chart.data.labels[context.dataIndex]}`, `0%`]
+                            return display;
+                        }
+
                     }
                 }
             },
@@ -113,7 +120,7 @@ const updateChart = (newData) => {
 }
 const nodata = () => {
     chart.data.labels = ["沒有資料"];
-    chart.data.datasets[0].data = [""];
+    chart.data.datasets[0].data = [0];
     chart.update();
 }
 const getImageUrl = (id) => {
@@ -150,48 +157,40 @@ const data = reactive({
     arr: []
 })
 
-const gettoday = () => {
-    const url = `${counterStore.publicPath}fetchbydayt.php`;
-    axios
-        .post(url, {
-            type: "1",
-            full: today.full
-        })
-        .then((response) => {
-            if (response.data.length > 0) {
-                data.arr = response.data;
-                getcolorarr();
-                createChart();
-            } else {
-                data.arr = response.data;
-                nodata();
-            }
-
-        })
-        .catch((error) => {
-            console.log(error.message);
-        });
-
-}
 const getbyweek = () => {
     const url = `${counterStore.publicPath}fetchbydayt.php`;
-    selectday.value.start ="";
-    selectday.value.end ="";
+    selectday.value.start = "";
+    selectday.value.end = "";
     axios
         .post(url, {
             type: "1",
             full: today.full
         })
         .then((response) => {
-            if (response.data.length > 0) {
-                data.arr = response.data;
-                colorarr.value = [];
-                getcolorarr();
-                updateChart(response.data);
+            if (chart) {
+                if (response.data.length > 0) {
+                    data.arr = response.data;
+                    colorarr.value = [];
+                    getcolorarr();
+                    updateChart(response.data);
+                } else {
+                    data.arr = [];
+                    nodata();
+                }
             } else {
-                nodata();
-                data.arr = response.data;
+                if (response.data.length > 0) {
+                    data.arr = response.data;
+                    getcolorarr();
+                    createChart();
+                } else {
+                    console.log('1')
+                    data.arr = [];
+                    getcolorarr();
+                    createChart();
+                    nodata();
+                }
             }
+
         })
         .catch((error) => {
             console.log(error.message);
@@ -201,8 +200,8 @@ const getbyweek = () => {
 
 const getbyMon = () => {
     const url = `${counterStore.publicPath}fetchbydayt.php`;
-    selectday.value.start ="";
-    selectday.value.end ="";
+    selectday.value.start = "";
+    selectday.value.end = "";
     axios
         .post(url, {
             type: "2",
@@ -225,8 +224,8 @@ const getbyMon = () => {
 };
 const getbyYear = () => {
     const url = `${counterStore.publicPath}fetchbydayt.php`;
-    selectday.value.start ="";
-    selectday.value.end ="";
+    selectday.value.start = "";
+    selectday.value.end = "";
     axios
         .post(url, {
             type: "3",
@@ -369,7 +368,8 @@ const clickbtn = () => {
                 <span @click="getbyYear">今年</span>
                 <span @click="openselect">自訂</span>
             </div>
-            <p style="font-size: 14px;" v-if="selectday.start">查詢期間 : <span>{{ selectday.start }}</span>~<span>{{ selectday.end }}</span></p>
+            <p style="font-size: 14px;" v-if="selectday.start">查詢期間 : <span>{{ selectday.start }}</span>~<span>{{
+                selectday.end }}</span></p>
             <table>
                 <thead>
                     <th>消費類別</th>
