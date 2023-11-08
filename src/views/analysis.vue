@@ -375,11 +375,11 @@ const clickbtn = () => {
                     <th>消費類別</th>
                     <th>消費總額</th>
                 </thead>
-                <tr v-if="pay" v-for="li in pay" :key="li.m_id" :style="{ backgroundColor: rowcolor(li.m_id) }">
+                <tr v-if="pay.length>0" v-for="li in pay" :key="li.m_id" :style="{ backgroundColor: rowcolor(li.m_id) }">
                     <td><img :src="getImageUrl(li.m_id)" alt="">{{ li.m_name }}</td>
                     <td>{{ li.sum }}元</td>
                 </tr>
-                <tr v-else>
+                <tr v-else style="line-height: 3;">
                     <td colspan="2">查無資料</td>
                 </tr>
             </table>

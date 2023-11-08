@@ -629,7 +629,6 @@ main {
 
                 th {
                     width: 500px;
-
                 }
             }
 
@@ -661,7 +660,7 @@ main {
                     width: 100%;
 
                     td {
-                        width: 500px;
+                        width: 1280px;
                         text-align: center;
                         line-height: 2;
                     }
